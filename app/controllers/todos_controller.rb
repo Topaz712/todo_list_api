@@ -1,5 +1,6 @@
 class TodosController < ApplicationController
   before_action :set_todo, only: [:show, :update, :destroy]
+  before_action :authenticate_request
 
   def index
     todos = Todo.all
@@ -27,6 +28,12 @@ class TodosController < ApplicationController
     else
       render json: @todo.errors, status: :unprocessable_entity
     end
+  end
+
+  def my_todos
+    todos = @current_user.todos
+
+    render json: TodoBlueprint.render(todos, view: :normal), status: :ok
   end
 
   def destroy
